@@ -12,8 +12,9 @@ import pandas as pd
 tbl0 = pd.read_csv("tbl0.tsv", sep="\t")
 tbl1 = pd.read_csv("tbl1.tsv", sep="\t")
 tbl2 = pd.read_csv("tbl2.tsv", sep="\t")
-
-
+df0=pd.DataFrame(tbl0)
+df1=pd.DataFrame(tbl1)
+df2=pd.DataFrame(tbl2)
 def pregunta_01():
     """
     ¿Cuál es la cantidad de filas en la tabla `tbl0.tsv`?
@@ -22,7 +23,7 @@ def pregunta_01():
     40
 
     """
-    return
+    return df0.shape[0]
 
 
 def pregunta_02():
@@ -33,7 +34,7 @@ def pregunta_02():
     4
 
     """
-    return
+    return df0.shape[1]
 
 
 def pregunta_03():
@@ -50,7 +51,7 @@ def pregunta_03():
     Name: _c1, dtype: int64
 
     """
-    return
+    return df0['_c1'].value_counts()
 
 
 def pregunta_04():
@@ -65,8 +66,10 @@ def pregunta_04():
     E    4.785714
     Name: _c2, dtype: float64
     """
-    return
+    df0.set_index('_c1')
+    return df0.iloc[:,[1,2]].groupby('_c1').mean()
 
+print(pregunta_04())
 
 def pregunta_05():
     """
@@ -82,7 +85,7 @@ def pregunta_05():
     E    9
     Name: _c2, dtype: int64
     """
-    return
+    return df0.iloc[:,[1,2]].groupby('_c1').max()
 
 
 def pregunta_06():
