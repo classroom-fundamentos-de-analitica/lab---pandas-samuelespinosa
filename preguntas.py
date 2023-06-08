@@ -49,8 +49,7 @@ def pregunta_03():
     Name: _c1, dtype: int64
 
     """
-    return df0['_c1'].value_counts()
-
+    return df0['_c1'].value_counts().sort_index()
 
 def pregunta_04():
     """
@@ -95,8 +94,7 @@ def pregunta_06():
     ['A', 'B', 'C', 'D', 'E', 'F', 'G']
 
     """
-    return sorted(df1._c4.unique())
-
+    return sorted(df1._c4.astype(str).str.upper().unique())
 
 def pregunta_07():
     """
@@ -167,8 +165,8 @@ def pregunta_10():
     3   D                  1:2:3:5:5:7
     4   E  1:1:2:3:3:4:5:5:5:6:7:8:8:9
     """
-    return df0.groupby('_c1')['_c2'].apply(lambda x: ':'.join(sorted(list(map(str,x)))))
-
+    r=df0.groupby('_c1')['_c2'].apply(lambda x: ':'.join(sorted(list(map(str,x))))).to_frame()
+    return r
 
 def pregunta_11():
     """
@@ -186,9 +184,7 @@ def pregunta_11():
     38   38      d,e
     39   39    a,d,f
     """
-    return df1.groupby('_c0')['_c4'].apply(lambda x: ','.join(sorted(list(map(str,x)))))
-
-
+    return df1.groupby('_c0')['_c4'].apply(lambda x: ','.join(sorted(list(map(str,x))))).to_frame().reset_index()
 def pregunta_12():
     """
     Construya una tabla que contenga _c0 y una lista separada por ',' de los valores de
@@ -204,8 +200,9 @@ def pregunta_12():
     38   38                    eee:0,fff:9,iii:2
     39   39                    ggg:3,hhh:8,jjj:5
     """
-    return df2.groupby('_c0').apply(lambda x: ','.join(sorted(list(x['_c5a']+":"+x['_c5b'].astype(str)))))
-
+    r= df2.groupby('_c0').apply(lambda x: ','.join(sorted(list(x['_c5a']+":"+x['_c5b'].astype(str))))).to_frame().reset_index()
+    r.columns=['_c0','_c5']
+    return r
 
 def pregunta_13():
     """
