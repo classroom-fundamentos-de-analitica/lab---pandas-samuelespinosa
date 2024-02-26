@@ -9,10 +9,9 @@ Utilice los archivos `tbl0.tsv`, `tbl1.tsv` y `tbl2.tsv`, para resolver las preg
 """
 import pandas as pd
 
-tbl0 = pd.read_csv("tbl0.tsv", sep="\t")
-tbl1 = pd.read_csv("tbl1.tsv", sep="\t")
-tbl2 = pd.read_csv("tbl2.tsv", sep="\t")
-
+df0 = pd.read_csv("tbl0.tsv", sep="\t")
+df1 = pd.read_csv("tbl1.tsv", sep="\t")
+df2 = pd.read_csv("tbl2.tsv", sep="\t")
 
 def pregunta_01():
     """
@@ -22,7 +21,7 @@ def pregunta_01():
     40
 
     """
-    return
+    return df0.shape[0]
 
 
 def pregunta_02():
@@ -33,7 +32,7 @@ def pregunta_02():
     4
 
     """
-    return
+    return df0.shape[1]
 
 
 def pregunta_03():
@@ -50,8 +49,7 @@ def pregunta_03():
     Name: _c1, dtype: int64
 
     """
-    return
-
+    return df0['_c1'].value_counts().sort_index()
 
 def pregunta_04():
     """
@@ -65,7 +63,9 @@ def pregunta_04():
     E    4.785714
     Name: _c2, dtype: float64
     """
-    return
+
+    return df0.groupby('_c1')['_c2'].mean()
+
 
 
 def pregunta_05():
@@ -82,7 +82,7 @@ def pregunta_05():
     E    9
     Name: _c2, dtype: int64
     """
-    return
+    return df0.groupby('_c1')['_c2'].max()
 
 
 def pregunta_06():
@@ -94,8 +94,7 @@ def pregunta_06():
     ['A', 'B', 'C', 'D', 'E', 'F', 'G']
 
     """
-    return
-
+    return sorted(df1._c4.astype(str).str.upper().unique())
 
 def pregunta_07():
     """
@@ -110,7 +109,7 @@ def pregunta_07():
     E    67
     Name: _c2, dtype: int64
     """
-    return
+    return df0.groupby('_c1')['_c2'].sum()
 
 
 def pregunta_08():
@@ -128,7 +127,8 @@ def pregunta_08():
     39   39   E    5  1998-01-26    44
 
     """
-    return
+    df0['suma']=df0['_c2']+df0['_c0']
+    return df0
 
 
 def pregunta_09():
@@ -146,7 +146,9 @@ def pregunta_09():
     39   39   E    5  1998-01-26  1998
 
     """
-    return
+    
+    df0['year']=df0['_c3'].map(lambda i: i[0:4])
+    return df0
 
 
 def pregunta_10():
@@ -163,8 +165,8 @@ def pregunta_10():
     3   D                  1:2:3:5:5:7
     4   E  1:1:2:3:3:4:5:5:5:6:7:8:8:9
     """
-    return
-
+    r=df0.groupby('_c1')['_c2'].apply(lambda x: ':'.join(sorted(list(map(str,x))))).to_frame()
+    return r
 
 def pregunta_11():
     """
@@ -182,9 +184,7 @@ def pregunta_11():
     38   38      d,e
     39   39    a,d,f
     """
-    return
-
-
+    return df1.groupby('_c0')['_c4'].apply(lambda x: ','.join(sorted(list(map(str,x))))).to_frame().reset_index()
 def pregunta_12():
     """
     Construya una tabla que contenga _c0 y una lista separada por ',' de los valores de
@@ -200,8 +200,9 @@ def pregunta_12():
     38   38                    eee:0,fff:9,iii:2
     39   39                    ggg:3,hhh:8,jjj:5
     """
-    return
-
+    r= df2.groupby('_c0').apply(lambda x: ','.join(sorted(list(x['_c5a']+":"+x['_c5b'].astype(str))))).to_frame().reset_index()
+    r.columns=['_c0','_c5']
+    return r
 
 def pregunta_13():
     """
@@ -217,4 +218,4 @@ def pregunta_13():
     E    275
     Name: _c5b, dtype: int64
     """
-    return
+    return pd.merge(df0[['_c0','_c1']],df2[['_c0','_c5b']],on='_c0').groupby('_c1')['_c5b'].sum()
